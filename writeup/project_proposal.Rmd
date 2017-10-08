@@ -1,8 +1,3 @@
----
-title: "Project_Proposal"
-output: html_document
----
-***
 ### Original Paper:
 
 Hughes ML., Geraci L., De Forrest RL., (2013). *Aging 5 years in 5 minutes: The Effect of Taking a Memory Test on Older Adults' Subjective Age.* Psychological Science, 24(12) 2481-2488.
