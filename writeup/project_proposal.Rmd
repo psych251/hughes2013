@@ -1,0 +1,36 @@
+---
+title: "Project_Proposal"
+output: html_document
+---
+***
+### Original Paper:
+
+Hughes ML., Geraci L., De Forrest RL., (2013). *Aging 5 years in 5 minutes: The Effect of Taking a Memory Test on Older Adults' Subjective Age.* Psychological Science, 24(12) 2481-2488.
+
+###  **Justification of experiement**
+***
+
+For my project proposal, I chose to replicate study three from the paper *“Aging 5 Years in 5 Minutes: The Effects of Taking a Memory Test on Older Adults’ Subjective Age.”* In this experiment, Hughes and colleagues tested whether an older individuals subjective sense of age increases after taking a free-recall memory test. Using a list of 30 categorizable nouns, Hughes et al. found a significant increase of subjective age when an older population (55-70) took a memory versus a vocabulary test. In Anthony Wagner’s lab, I play an integral role on an Aging and Memory project that looks at how hippocampal pattern separation/completion may break down as we grow older, thereby impacting our ability to encode and retrieve memories. As part of data collection for the aging project, our lab consistently asks participants to acknowledge their age before/after numerous neuropsychological and fMRI memory tasks. While this project doesn't directly overlap with my multivariate fMRI experimental approach, an introduction to different strategies for capturing memory bias could prove informative for how to structure experimental designs in the future. 
+
+
+### **Potential Challenges and Materials Required for Replication**
+***
+The experiment will require 57 older adults (ages 55-70) to perform a vocabulary or memory test on Mturk. Prior to the test, participants will estimate their age on a line with endpoints by pulling a lever from the far left to their respective age. The same procedure will be performed after completion of a test. All of this can be done through MTurk, though I might venture into Python to build coding skills. 
+
+To complete my replication project I will require:
+
+* Original vocabulary & memory words used for free-recall and tests
+* Grading rubric and set-up for vocabulary tests (not stated in paper)
+* How tests were administered in MTurk
+* Run a 2x2 mixed ANOVA model
+
+Challenges:
+ 
+* Recruitment of older adults (ages 55-70)
+* Potentially financial (no information provided at compensation)
+* Haven't ever used MTurk 
+* Generation of an age rating lever (though this might be included in MTurk)
+* If authors aren't willing to share the requested material above, I may have to choose another study. 
+
+
+
