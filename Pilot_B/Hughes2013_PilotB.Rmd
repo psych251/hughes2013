@@ -1,0 +1,185 @@
+---
+title: "Aging 5 Years in 5 Minutes: The Effect of Taking a Memory Test on Older Adults’ Subjective Age (2013, Psychological Science)"
+author: "Marc B. Harrison (marcharr@stanford.edu)"
+date: "`r format(Sys.time(), '%B %d, %Y')`"
+output:
+  html_document:
+    toc: yes
+    toc_depth: 3
+    toc_float: 
+      collapsed: false
+---
+
+<!-- Replication reports should all use this template to standardize reporting across projects.  These reports will be public supplementary materials that accompany the summary report(s) of the aggregate results. -->
+
+##Introduction
+
+How one views their subjective age has been shown to impact well-being and health (Barrett 2003, Stephan, Caudroit, & Chalabaev 2013). A recent study looked at how subjective age can be impacted by negative feedback during a cognitive task (Eibach, Mock, & Courtney 2010). Results suggested that older adults attitudes about their abilities during a cognitive task can increase subjective age (Eibach, Mock, & Courtney 2010). In this replication study of Hughes et al. 2013, authors wondered if just taking a memory test subjectively ages an older adult? 
+
+Their argument linked a memory test environment with potential negative stereotypes about older adults to a potential increase of one's subjective age. During a typical older adult cognitive experiment, a participant is taken to a campus with younger adults, routinely asked to indicate how old they are and then tested on a cognitive task. In addition to negative stereotypes that can produce harmful effects in older adults, these factors led Hughes, Geraci & De Forrest to perform four experiments to assess if taking a memory test impacted a subjective age. Using a 5 minute memory or vocabulary test, results indicated that taking a memory test resulted in a increased subjective rating of one's age compared to a vocabulary test of a similar time frame on MTurk. 
+
+
+##Methods
+
+
+###Power Analysis
+
+
+> Cohen'd D=0.76. To obtain 80% power, sample size of 30 for memory, 30 for vocabulary. Older adults 55 or older living in the USA. This metric was obtained using a post-hoc two sided t-test with Gpower
+
+###Planned Sample
+
+> Planned sample = 60; 30 memory, 30 vocabulary --> all subjects above the age of 55 and living in the USA; proficient in english. 
+
+###Materials
+
+"Immediately after completing the demographic information section, subjects were randomized to either a memory test consisting of 30 categorizable nouns to study for an upcoming memory test or a vocabulary test of 40 words where they had to match a word with a similarly worded definition."
+
+"Fifty-seven older adults (ages 55–70; 36 female, 21 male) completed this online study via Amazon’s Mechanical Turk. All participants were located in the United States and received compensation for their participation. Participants had a mean age of 59.31 years (SD = 4.09) and a mean education of 15.19 years (SD = 1.98). Approximately half of the participants took the memory test (n = 28), whereas the other half took the vocabulary test (n = 29)."
+
+
+###Procedure	
+
+"The subjective age scale was shown with a range of 0 to 120 with a lever to to indicate their subjective age. They were required to click the lever to advance to to the next screen. In Study 3, half of the participants were given a vocabulary test instead of a memory test. The vocabulary test took the same amount of time as the memory test (approximately 5 min). In addition, the same subjective-age question was asked at baseline and post-test: “How old do you feel?”"
+
+###Analysis Plan
+
+"2 (test type: memory vs. vocabulary) × 2 (time of report: baseline vs. post-test) mixed analysis of variance. Outliers for subjects who rate themselves as more than 3 standard deviations from the mean for a subjective sense of age will be removed."
+
+**Clarify key analysis of interest here** 
+
+###Differences from Original Study
+
+
+
+### Methods Addendum (Post Data Collection)
+
+
+
+#### Actual Sample
+  Sample size, demographics, data exclusions based on rules spelled out in analysis plan
+
+#### Differences from pre-data collection methods plan
+  Any differences from what was described as the original plan, or “none”.
+
+
+##Results
+
+
+### Data preparation
+
+Data preparation following the analysis plan.
+	
+```{r}
+###Data Preparation
+
+##Load Relevant Libraries and Functions
+
+library(tidyverse)
+
+
+####Import data
+
+hughes <- read.csv("/Users/home/Desktop/Memory_Vocabulary_Test_December+3%2C+2017_23.22.csv", header = TRUE,  sep=",")
+
+
+#### Data exclusion / filtering
+
+hughes.tidy <- hughes %>%
+  rename(baseline_age = Q24_1,
+         posttest_age = Q206_1,
+         memory = Q189,
+         vocab = Q287,
+         ID = Q113)
+
+
+#hughes.tidy$pretest_age
+#hughes.tidy$posttest_age
+
+hughes.tidy <- hughes.tidy %>%
+  select(ID, baseline_age, posttest_age, type)
+
+hughes.tidy<-hughes.tidy[-c(1, 2), ]
+
+hughes.tidy$baseline_age <- as.numeric(as.character(hughes.tidy$baseline_age))
+hughes.tidy$posttest_age <- as.numeric(as.character(hughes.tidy$posttest_age))
+
+hughes.tidy$type <- as.factor(as.character(hughes.tidy$type))
+hughes.tidy$ID <- as.numeric(as.character(hughes.tidy$ID))
+hughes.tidy$ID <- as.factor(hughes.tidy$ID)
+#hughes.tidy$actual_age <- as.numeric(as.character(hughes.tidy$actual_age))
+```
+
+```{r}
+##############################
+### Group level statistics ###
+##############################
+
+#### Prepare data for analysis - create columns etc.
+hughes_gather <- gather(hughes.tidy, key = "condition", value = "age", baseline_age:posttest_age)
+View(hughes_gather)
+hughes_gather$condition <- as.factor(hughes_gather$condition)
+
+test <- hughes_gather %>%
+  spread(condition, type) 
+
+```
+
+
+```{r}
+##########################################################################################
+### How did taking the memory and vocabulary tests affect older adults’ subjective age? ###
+##########################################################################################
+
+
+#2x2 mixed ANOVA 
+AOV <- aov(age ~ type*condition + Error(ID/condition), data = hughes_gather)
+summary(AOV)
+model.tables(AOV)
+
+```
+
+### Confirmatory analysis
+
+
+
+The analyses as specified in the analysis plan.  
+
+*Side-by-side graph with original graph is ideal here*
+
+```{r}
+
+#plot for project
+
+library(Rmisc)
+
+hughes_plot <-hughes.tidy %>%
+  mutate(difference = posttest_age - baseline_age)
+
+hughes_plot$baseline_age[hughes_plot$baseline > 0] <- 0
+
+library(Rmisc)
+# summarySE provides the standard deviation, standard error of the mean, and a (default 95%) confidence interval
+X <- summarySE(hughes_gather, measurevar="age", groupvars=c("condition","type"))
+
+# graph
+ggplot(X, aes(x=condition, y=age, colour=type, group = type)) + 
+    geom_errorbar(aes(ymin=age-se, ymax=age+se), width=.1) +
+    geom_line() +
+    geom_point()
+```
+
+
+###Exploratory analyses
+
+Any follow-up analyses desired (not required).  
+
+## Discussion
+
+### Summary of Replication Attempt
+
+Open the discussion section with a paragraph summarizing the primary result from the confirmatory analysis and the assessment of whether it replicated, partially replicated, or failed to replicate the original result.  
+
+### Commentary
+
+Add open-ended commentary (if any) reflecting (a) insights from follow-up exploratory analysis, (b) assessment of the meaning of the replication (or not) - e.g., for a failure to replicate, are the differences between original and present study ones that definitely, plausibly, or are unlikely to have been moderators of the result, and (c) discussion of any objections or challenges raised by the current and original authors about the replication attempt.  None of these need to be long.
