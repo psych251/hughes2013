@@ -1,0 +1,10 @@
+name: Publish Document
+title:
+username:
+account: rpubs
+server: rpubs.com
+hostUrl: rpubs.com
+appId: https://api.rpubs.com/api/v1/document/337491/41daac7b23f84a7aaf2a20f0a0cd729e
+bundleId: https://api.rpubs.com/api/v1/document/337491/41daac7b23f84a7aaf2a20f0a0cd729e
+url: http://rpubs.com/MHarrison/337491
+when: 1512705138.19867
