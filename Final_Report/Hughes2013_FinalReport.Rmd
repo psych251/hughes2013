@@ -1,0 +1,282 @@
+---
+title: "Aging 5 Years in 5 Minutes: The Effect of Taking a Memory Test on Older Adults’ Subjective Age (2013, Psychological Science)"
+author: "Marc B. Harrison (marcharr@stanford.edu)"
+date: "`r format(Sys.time(), '%B %d, %Y')`"
+output:
+  html_document:
+    toc: yes
+    toc_depth: 3
+    toc_float: 
+      collapsed: false
+---
+
+<!-- Replication reports should all use this template to standardize reporting across projects.  These reports will be public supplementary materials that accompany the summary report(s) of the aggregate results. -->
+
+##Introduction
+
+As we grow older our physical age may reflect one value while our internal or subjective sense of age may be younger or older. How one views their subjective age has been shown to impact psychological well-being and health (Barrett 2003, Stephan, Caudroit, & Chalabaev 2013). A recent study looked at how subjective age can be impacted by negative feedback during a cognitive task (Eibach, Mock, & Courtney 2010), with results suggesting that older adults attitudes about their abilities during a cognitive task can increase their subjective age (Eibach, Mock, & Courtney 2010). Importantly, does taking a memory test impact an older adults subjective age? To place this question in context, consider an older adult who selects to participate in a memory experiment at a college campus. They have to travel to a campus surrounded by younger students, where these same students collect demographic information, administer a baseline cognitive test to assess memory performance (e.g. mini mental state exam) and are finally are given a memory test. It is argued in Hughes et al. 2013 that this testing environment could potentially reinforce negative stereotypes through consistent classification of age for older adults. These factors led Hughes, Geraci & De Forrest to perform four experiments to assess if taking a memory test impacted subjective age in older adults. 
+
+For this replication I will focus on study #3. For study #3,the authors questioned if results shown in Study 1 & 2 (an increase subjective age for both taking a MMSE, and/or taking a brief memory test online) could be explained by taking just any type of test. Therefore, in study #3, older adults over the age of 55 (N=57) were randomized to a 5 minute memory or vocabulary test to isolate this potential caveat. Prior to and after either test, older adults were prompted with the question: "How old do you feel RIGHT NOW," and then had to report their subjective age by dragging a unmarked slider bar (see Figure 1 below). Results indicated that taking a memory test resulted in a increased subjective rating of one's age compared to no difference in subjective age for the vocabulary,
+
+
+![**Figure 1. Slider used in Study #3**](/Users/home/Desktop/silder.png)
+
+ 
+
+##Methods
+
+Overall, methods followed those described in Hughes et al. 2013 and are briefly restated below.  
+
+
+###Power Analysis
+
+In Hughes 2013, to test whether a subjective sense of age changed from pretest to post-test, a 2 (test type: memory vs. vocabulary) x 2 (time of report: pretest vs. post-test) mixed ANOVA was performed with a significant interaction between test type and time of report. This test was further refined by a planned t-test to quantify the interaction. Importantly, the effect size reported for the t-test was d=0.76. This value was used in the program G*Power3.1 under a two sample t-test a-prior setting to quantify how many participants would be required to obtain 80% power. Results indicated a sample size of 29 for memory, 29 for vocabulary would be sufficient to obtain 80% power. I chose to round to 30 for this replication. Older adults 55 or older living in the USA. This metric was obtained using a-priori two sided t-test with Gpower.
+
+###Planned Sample
+
+To obtain the critical power of 80% a Planned sample of 60 older adults above or at the age of 55 will be recruited through Amazon's MTurk; 30 memory, 30 vocabulary. In addition, all subjects will be proficient in English and live within the United States. 
+
+###Materials
+
+A survey implemented in Qualtrics will be used for this experiment in MTurk. Subjects will fill out a series of demographic questions and how they expect to perform during a memory or vocabulary test prior to the actual test. Prior to the start of the test, subjects will move a slider bar (Figure 1) to how they feel. Upon completion of subjective age rating, subjects will be randomized to either a memory or vocabulary test.The memory test will consist of 30 categorizable nouns to study for 3 minutes before being prompted to type all the words they can recall in a text box at the bottom of the computer screen. The vocabulary test will contain 44 questions, presented sequentially one at a time, where a target word must be matched to a similarly defined single word option out of four possible choices. 
+
+###Procedure	
+
+Each subject will advance to a Qualtrics survey through a link presented on Amazon MTurk. When age information is entered, participants 54 or younger will be thanked for their interest and excluded from moving on to the test portion. For those 55 years of age and older, subjects will be asked to subjectively rate their age. The subjective age scale was shown with a range of 0 to 120 with a lever to to indicate their subjective age (Figure 1). Subjects will be required to click the lever to advance to to the next screen. Each test will take approximately 5 mins. Pilot B recruitment procedures suggest that $0.50 will be adequate compensation to obtain the required sample size for each group of adults 55 and older. 
+
+
+###Analysis Plan
+
+Following original protocol of the original authors I plan to analyze collected data with a 2 (test type: memory vs. vocabulary) × 2 (time of report: baseline vs. post-test) Mixed Analysis of Variance to test for main effects and interactions. Additionally, I will use a box-plot and to further quantify visually how memory and vocabulary groups differ given mixed results during Pilot B. 
+
+
+###Differences from Original Study
+
+In my replication, participants will not take a series of tests in addition to being randomized to vocabulary or memory conditions. That is, participants will only took one test, vocabulary or memory. 
+
+
+
+### Methods Addendum (Post Data Collection)
+
+
+#### Actual Sample
+  Sample size, demographics, data exclusions based on rules spelled out in analysis plan
+
+#### Differences from pre-data collection methods plan
+  Any differences from what was described as the original plan, or “none”.
+
+## Results
+
+### Data preparation
+
+Data preparation following the analysis plan.
+	
+```{r}
+##Load Relevant Libraries and Functions
+
+library(tidyverse)
+library(knitr)
+library(xtable)
+knitr::opts_chunk$set(echo = TRUE, cache=TRUE)
+
+
+####Import data
+
+hughes <- read.csv("/Users/home/Desktop/anonymized-results.csv", header = TRUE,  sep=",")
+
+
+#### Data exclusion / filtering
+
+hughes.tidy <- hughes %>%
+  rename(Baseline = Q24_1,
+         Posttest = Q206_1,
+         mem = Q189,
+         vocab = Q287,
+         ID = Q113)
+
+
+hughes.tidy <- hughes.tidy %>%
+  select(ID, Baseline, Posttest, type)
+
+hughes.tidy<-hughes.tidy[-c(1, 2), ]
+
+hughes.tidy$Baseline <- as.numeric(as.character(hughes.tidy$Baseline))
+hughes.tidy$Posttest <- as.numeric(as.character(hughes.tidy$Posttest))
+
+hughes.tidy$type <- as.factor(as.character(hughes.tidy$type))
+hughes.tidy$ID <- as.numeric(as.character(hughes.tidy$ID))
+hughes.tidy$ID <- as.factor(hughes.tidy$ID)
+
+#### Prepare data for analysis - create columns etc.
+hughes_gather <- gather(hughes.tidy, key = "condition", value = "age", Baseline:Posttest)
+hughes_gather$condition <- as.factor(hughes_gather$condition)
+
+# generate group means for plot and analysis
+hughes_means <- hughes_gather %>%
+  group_by(condition, type) %>%
+  summarise(memory = mean(age))
+
+head(hughes_gather)
+```
+
+##Statistical Tests
+
+
+```{r}
+# How did taking the memory and vocabulary tests affect older adults’ subjective age? #
+
+library(xtable)
+
+
+#2x2 mixed ANOVA 
+
+Rep.test1 <- aov(age ~ type*condition + Error(ID/condition), data = hughes_gather)
+
+fm1.table <- xtable(Rep.test1)
+kable(fm1.table, caption = "Annova table", digits = 3)
+
+
+
+# t.test for difference between memory and vocabulary tests age
+hughes.spread<-spread(hughes_means, key = type, value = memory)
+tt1<-(t.test(hughes.spread$Memory_Test, hughes.spread$Vocabulary_Test))
+
+test <- hughes.tidy[order(hughes.tidy$type, hughes.tidy$ID), ]
+test.mem <- test[c(1:29),c(1:4)]
+test.vocab <- test[c(30:58),c(1:4)]
+
+# t.test for differences in memory condition
+t.test(test.mem$Baseline, test.mem$Posttest, paired=TRUE)
+
+# t.test for differences in vocbulary condition
+t.test(test.vocab$Baseline, test.vocab$Posttest, paired=TRUE)
+
+```
+
+### Confirmatory analysis
+
+The analyses as specified in the analysis plan.  
+
+*Side-by-side graph with original graph is ideal here*
+
+```{r}
+################
+#     PLOT     #
+################
+
+
+library(Rmisc)
+hughes_plot <-hughes.tidy %>%
+  mutate(difference = Posttest - Baseline)
+
+hughes_plot$Baseline[hughes_plot$Baseline > 0] <- 0
+
+names(hughes_plot)[names(hughes_plot)=="difference"] <- "Posttest"
+hughes_plot$Posttest <-NULL
+
+hughes_plot<-hughes_plot[c(1,2,4,3)]
+
+plot <- gather(hughes_plot, key = "condition", value = "age", Baseline:Posttest)
+
+X <- summarySE(plot, measurevar="age", groupvars=c("condition","type"))
+
+
+Final_plot<-ggplot(X, aes(x=condition, y=age, group = type)) + 
+    geom_errorbar(aes(ymin=age-se, ymax=age+se), width=.05) +
+    geom_line(aes(linetype=type), size=1) +
+    geom_point() +
+    ylab("Change in Subjective Age (years)") + 
+    ggtitle("Study 3") +
+    theme_bw() +
+    theme(legend.position=c(.6, .2)) +
+    theme(axis.line = element_line(colour = "black"),
+    panel.grid.major = element_blank(),
+    panel.grid.minor = element_blank(),
+    panel.border = element_blank(),
+    panel.background = element_blank()) 
+    
+
+Final<-Final_plot + ggtitle("                                             Study 3") + 
+     theme(plot.title = element_text(lineheight=.8, face="bold"))
+Final + expand_limits(y=c(-20,15))
+```
+### Comparison Plot 
+
+![Figure 2: Differences between Vocabulary and Memory from Hughes et al. 2013](/Users/home/Desktop/hughes.png)
+
+## Exploratory analyses
+
+For exploratory analyses I will use medians instead of means for comparison and mean +/- 3 standard deviation exclusion criteria for this analysis given my Pilot B results that displayed a participant rating themselves more than 20 years older. Interestingly, this wasn't done in the original study. 
+
+
+```{r}
+ library(wesanderson)
+mean.box<-ggplot(hughes_gather, aes(x=type, y=age, fill=condition)) + geom_boxplot() + 
+    theme(axis.line = element_line(colour = "black"),
+    panel.grid.major = element_blank(),
+    panel.grid.minor = element_blank(),
+    panel.border = element_blank(),
+    panel.background = element_blank()) 
+
+mean.box + scale_fill_manual(values=wes_palette(n=2, name="Moonrise2"))
+
+```
+
+```{r}
+#remove self-report outliers
+
+explore_gather <-hughes_gather[c(2:12,14:24,27:31,33,35:49,51,53:58,60:70,72:82,85:89,91,93:107,109,111:116),c(1:4)]
+
+explore.mem <- test.mem[c(2:12, 14:25, 27:29),c(1:4)]
+explore.vocab <-test.vocab[c(1:5, 7:12,14:16, 19:25, 27:29),c(1:4)]
+
+# t.test for differences in memory condition
+t.test(explore.mem$Baseline, explore.mem$Posttest, paired=TRUE)
+
+# t.test for differences in vocbulary condition
+t.test(explore.vocab$Baseline, explore.vocab$Posttest, paired=TRUE)
+
+Rep.test2 <- aov(age ~ type*condition + Error(ID/condition), data = explore_gather)
+
+fm2.table <- xtable(Rep.test2)
+kable(fm2.table, caption = "Anova table", digits = 3)
+
+# Non-Parametric tests
+wilcox.test(explore.mem$Baseline, explore.mem$Posttest, paired=TRUE)
+wilcox.test(explore.vocab$Baseline, explore.vocab$Posttest, paired=TRUE)
+ks.test(explore.mem$Baseline, explore.mem$Posttest)
+ks.test(explore.vocab$Baseline, explore.vocab$Posttest)
+
+
+```
+
+# Explore graphs
+
+```{r}
+mean.box2<- ggplot(explore_gather, aes(x=type, y=age, fill=condition)) + geom_boxplot() + 
+    theme(axis.line = element_line(colour = "black"),
+    panel.grid.major = element_blank(),
+    panel.grid.minor = element_blank(),
+    panel.border = element_blank(),
+    panel.background = element_blank()) 
+
+mean.box2 + scale_fill_manual(values=wes_palette(n=2, name="Moonrise2"))
+
+
+
+```
+
+ 
+
+## Discussion
+
+### Summary of Replication Attempt
+
+For my replication of study #3 in Hughes, Geraci & De Forrest 2013, I implemented a similar MTurk design using the same Qualtrics memory and vocabulary tests. After data collection of participants (N=58), I organized data and performed a 2 (test type: memory vs. vocabulary) x 2 (time of report: pretest vs. post-test) mixed ANOVA . Previously published results were fully replicated with a significant interaction [F(1, 56) = 6.13, p =0.02], that was driven by a memory-test t(28)=3.26, p=0.003, and not by taking a vocabulary test [ t(28)=0.66, p=0.52]. Therefore, when older adults take a memory test results suggest that subjective age increases relative to a subjective baseline rating.  
+
+### Commentary
+
+Insights from exploratory analysis are important to properly place this replication in a proper context. First, I removed all outliers as inspected through a box plot and looking through how subjects rated themselves.  I once again performed a  2 (test type: memory vs. vocabulary) x 2 (time of report: pretest vs. post-test) mixed ANOVA with results indicating an effect for condition [F(1,48) = 5.08, p=0.03], and no interaction [F(1,48) = 1.35, p=0.25]. Further delineation using T-tests once again confirmed a significant effect for taking a memory test [t(25)=2.68, p=0.01], but not for vocabulary. Subsequent non-parametric testing revealed similar results. 
+
+Using similar test strategies and materials for this replication, results suggest a full replication with some points to consider in future investigations. First, in the original study, no mention was made about removing outliers (e.g. people who rated themselves as 30 years older or younger) and this might have driven previous results as exploratory analysis suggests.
+Interestingly, one participant maxed out their subjective age for both conditions at 120 years of age, while a few others would rate themselves under 20 years of age. These skewed subjective ratings lead this author to posit if the slider might be driving effects shown in this replication, and future investigations with a more explicit slider might help answer these questions. Test length could also of factored into this replication study. In the shortened version that I implemented in MTurk little cognitive testing was performed in comparison to the original study which consisted of more cognitive tests. Additional exploratory analysis could look at how performance and varying test length might impact subjective rating. 
